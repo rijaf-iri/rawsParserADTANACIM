@@ -74,6 +74,8 @@ get.pulsonic.data <- function(dirAWS, dirPLUSO, initData){
                 next
             }
 
+            if(is.null(out)) next
+
             awsInfo$last[j] <- max(out$obs_time)
 
             locFile <- paste(range(out$obs_time), collapse = "_")
