@@ -1,5 +1,5 @@
 
-process.pulsonic <- function(dirAWS, dirPLUSO, initData){
+get.pulsonic.data <- function(dirAWS, dirPLUSO, initData){
     options(scipen = 999)
     tz <- "Africa/Dakar"
     Sys.setenv(TZ = tz)
