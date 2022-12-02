@@ -6,7 +6,7 @@ process.pulsonic <- function(dirAWS, dirPLUSO, initData){
     origin <- "1970-01-01"
     awsNET <- 1
 
-    dirOUT <- file.path(dirAWS, "AWS_DATA", "DATA", "PULSONIC")
+    dirOUT <- file.path(dirAWS, "AWS_DATA", "DATA", "minutes", "PULSONIC")
     if(!dir.exists(dirOUT))
         dir.create(dirOUT, showWarnings = FALSE, recursive = TRUE)
     dirLOG <- file.path(dirAWS, "AWS_DATA", "LOG", "PULSONIC")

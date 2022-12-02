@@ -51,7 +51,3 @@ process.pulsonic <- function(dirAWS, dirPLUSO, initData = FALSE){
 
     return(0)
 }
-
-# dirAWS <- "/home/adt/ADT"
-# dirPLUSO <- "/home/adt/PULSONIC"
-
