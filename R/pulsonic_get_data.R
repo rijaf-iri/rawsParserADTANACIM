@@ -13,8 +13,9 @@ get.pulsonic.data <- function(dirAWS, dirPLUSO, initData){
     if(!dir.exists(dirLOG))
         dir.create(dirLOG, showWarnings = FALSE, recursive = TRUE)
 
-    logPROC <- file.path(dirLOG, "processing_pulsonic.txt")
-    awsLOG <- file.path(dirLOG, "AWS_LOG.txt")
+    mon <- format(Sys.time(), '%Y%m')
+    logPROC <- file.path(dirLOG, paste0("processing_pulsonic_", mon, ".txt"))
+    awsLOG <- file.path(dirLOG, paste0("AWS_LOG_", mon, ".txt"))
 
     varFile <- file.path(dirAWS, "AWS_DATA", "CSV", "pulsonic_pars.csv")
     varTable <- utils::read.table(varFile, sep = ',', header = TRUE,

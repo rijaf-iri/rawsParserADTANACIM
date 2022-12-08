@@ -50,3 +50,14 @@ round.time.minutes10 <- function(times){
     times$sec[] <- 0
     times
 }
+
+addMonths <- function(daty, n = 1){
+    foo <- function(daty, n){
+        date0 <- seq(daty, by = paste(n, "months"), length = 2)[2]
+        date1 <- seq(as.Date(paste(format(daty, '%Y-%m'), '01', sep = '-')),
+                    by = paste(n + 1, "months"), length = 2)[2] - 1
+        if(date0 > date1) date1 else date0
+    }
+    daty <- if(length(daty) == 1) foo(daty, n) else do.call(c, lapply(daty, foo, n))
+    return(daty)
+}

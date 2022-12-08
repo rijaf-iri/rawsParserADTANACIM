@@ -9,10 +9,12 @@
 #' @export
 
 process.adcon <- function(dirAWS, dirUP){
+    Sys.setenv(TZ = "Africa/Dakar")
+    mon <- format(Sys.time(), '%Y%m')
     dirLOG <- file.path(dirAWS, "AWS_DATA", "LOG", "ADCON")
     if(!dir.exists(dirLOG))
         dir.create(dirLOG, showWarnings = FALSE, recursive = TRUE)
-    logPROC <- file.path(dirLOG, "processing_adcon.txt")
+    logPROC <- file.path(dirLOG, paste0("processing_adcon_", mon, ".txt"))
 
     ret <- try(get.adcon.data(dirAWS, dirUP), silent = TRUE)
     if(inherits(ret, "try-error")){ 
@@ -36,10 +38,12 @@ process.adcon <- function(dirAWS, dirUP){
 #' @export
 
 process.pulsonic <- function(dirAWS, dirPLUSO, initData = FALSE){
+    Sys.setenv(TZ = "Africa/Dakar")
+    mon <- format(Sys.time(), '%Y%m')
     dirLOG <- file.path(dirAWS, "AWS_DATA", "LOG", "PULSONIC")
     if(!dir.exists(dirLOG))
         dir.create(dirLOG, showWarnings = FALSE, recursive = TRUE)
-    logPROC <- file.path(dirLOG, "processing_pulsonic.txt")
+    logPROC <- file.path(dirLOG, paste0("processing_pulsonic_", mon, ".txt"))
 
     ret <- try(get.pulsonic.data(dirAWS, dirPLUSO, initData), silent = TRUE)
     if(inherits(ret, "try-error")){ 

@@ -4,7 +4,7 @@
 \alias{process.pulsonic}
 \title{Process ADCON data.}
 \usage{
-process.pulsonic(dirAWS, dirPLUSO, initData)
+process.pulsonic(dirAWS, dirPLUSO, initData = FALSE)
 }
 \arguments{
 \item{dirAWS}{full path to the directory containing the AWS_DATA folder.\cr}

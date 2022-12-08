@@ -17,9 +17,10 @@ get.adcon.data <- function(dirAWS, dirUP){
     if(!dir.exists(dirLOG))
         dir.create(dirLOG, showWarnings = FALSE, recursive = TRUE)
 
-    logPROC <- file.path(dirLOG, "processing_adcon.txt")
-    awsLOG <- file.path(dirLOG, "AWS_LOG.txt")
-    uploadFile <- file.path(dirLOG, 'upload_failed.txt')
+    mon <- format(Sys.time(), '%Y%m')
+    logPROC <- file.path(dirLOG, paste0("processing_adcon_", mon, ".txt"))
+    awsLOG <- file.path(dirLOG, paste0("AWS_LOG_", mon, ".txt"))
+    uploadFailed <- file.path(dirLOG, 'upload_failed.txt')
 
     conn <- connect.adcon(dirAWS)
     if(is.null(conn)){
@@ -34,9 +35,11 @@ get.adcon.data <- function(dirAWS, dirUP){
         format.out.msg(msg, logPROC)
         upload <- FALSE
     }else{
-        dirUP <- file.path(dirUP, "AWS_DATA", "DATA", "minutes", "ADCON")
+        dirUPData <- file.path(dirUP, "AWS_DATA", "DATA", "minutes", "ADCON")
+        dirUPLog <- file.path(dirUP, "AWS_DATA", "LOG", "ADCON")
         ssh::ssh_exec_wait(session, command = c(
-            paste0('if [ ! -d ', dirUP, ' ] ; then mkdir -p ', dirUP, ' ; fi')
+            paste0('if [ ! -d ', dirUPData, ' ] ; then mkdir -p ', dirUPData, ' ; fi'),
+            paste0('if [ ! -d ', dirUPLog, ' ] ; then mkdir -p ', dirUPLog, ' ; fi')
         ))
         upload <- TRUE
     }
@@ -128,22 +131,35 @@ get.adcon.data <- function(dirAWS, dirUP){
             saveRDS(don, locFile)
 
             if(upload){
-                upFile <- file.path(dirUP, basename(locFile))
+                upFile <- file.path(dirUPData, basename(locFile))
                 ret <- try(ssh::scp_upload(session, locFile, to = upFile, verbose = FALSE), silent = TRUE)
 
                 if(inherits(ret, "try-error")){
                     if(grepl('disconnected', ret[1])){
+                        Sys.sleep(5)
                         session <- connect.ssh(dirAWS)
                         upload <- if(is.null(session)) FALSE else TRUE
                     }
-                    cat(basename(locFile), file = uploadFile, append = TRUE)
+                    cat(basename(locFile), file = uploadFailed, append = TRUE, sep = '\n')
                 }
             }else{
-                cat(basename(locFile), file = uploadFile, append = TRUE)
+                cat(basename(locFile), file = uploadFailed, append = TRUE, sep = '\n')
             }
 
             utils::write.table(awsInfo, awsFile, sep = ",", na = "", col.names = TRUE,
                                row.names = FALSE, quote = FALSE)
+        }
+    }
+
+    if(upload){
+        if(file.exists(logPROC)){
+            logPROC1 <- file.path(dirUPLog, basename(logPROC))
+            ssh::scp_upload(session, logPROC, to = logPROC1, verbose = FALSE)
+        }
+
+        if(file.exists(awsLOG)){
+            awsLOG1 <- file.path(dirUPLog, basename(awsLOG))
+            ssh::scp_upload(session, awsLOG, to = awsLOG1, verbose = FALSE)
         }
     }
 
