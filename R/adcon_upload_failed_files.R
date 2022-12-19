@@ -21,7 +21,7 @@ upload.adcon.failed.files <- function(dirAWS, dirUP){
 
     session <- connect.ssh(dirAWS)
     if(is.null(session)){
-        msg <- "Unable to connect to ADT server\n"
+        msg <- "Unable to connect to ADT server"
         format.out.msg(msg, logPROC)
         upload <- FALSE
     }else{
@@ -33,6 +33,11 @@ upload.adcon.failed.files <- function(dirAWS, dirUP){
     if(!file.exists(uploadFailed)) return(0)
 
     failedFILES <- readLines(uploadFailed, warn = FALSE)
+    failedFILES <- trimws(failedFILES)
+    failedFILES <- failedFILES[failedFILES != ""]
+
+    if(length(failedFILES) == 0) return(0)
+
     failedFILES1 <- failedFILES
 
     for(uFile in failedFILES){
@@ -55,7 +60,7 @@ upload.adcon.failed.files <- function(dirAWS, dirUP){
                 ))
 
                 failedFILES1 <- failedFILES1[failedFILES1 != uFile]
-                if(length(failedFILES1) > 0){
+                if(length(failedFILES1) > 0 | failedFILES[length(failedFILES)] == uFile){
                     cat(failedFILES1, file = uploadFailed, sep = '\n', append = FALSE)
                 }
             }

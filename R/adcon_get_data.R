@@ -31,7 +31,7 @@ get.adcon.data <- function(dirAWS, dirUP){
 
     session <- connect.ssh(dirAWS)
     if(is.null(session)){
-        msg <- paste(session, "Unable to connect to ADT server\n")
+        msg <- "Unable to connect to ADT server"
         format.out.msg(msg, logPROC)
         upload <- FALSE
     }else{
